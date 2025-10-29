@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OceanBooks – Upload Book</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{
+  background:radial-gradient(circle at top,#020202,#000);
+  color:#fff;min-height:100vh;
+  padding:100px 6% 60px;
+  overflow-x:hidden;
+}
+
+/* Header */
+header{
+  position:fixed;top:0;left:0;width:100%;
+  background:rgba(20,20,20,0.8);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  padding:1rem 6%;
+  display:flex;justify-content:space-between;align-items:center;
+  z-index:1000;
+}
+header h1{
+  font-size:1.6rem;
+  background:linear-gradient(90deg,#00ffaa,#00e0ff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  text-shadow:0 0 15px rgba(0,255,255,0.25);
+}
+.nav-links{display:flex;align-items:center;gap:1.2rem;}
+.nav-links a{color:#bbb;text-decoration:none;font-weight:500;transition:.25s;}
+.nav-links a:hover{color:#00ffaa;text-shadow:0 0 10px #00ffaa;}
+.menu-toggle{display:none;font-size:1.4rem;color:#00e0ff;cursor:pointer;}
+@media(max-width:768px){
+  .nav-links{
+    position:absolute;top:100%;right:0;
+    flex-direction:column;background:rgba(10,10,10,0.95);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:10px;padding:1rem 1.5rem;
+    display:none;
+  }
+  .nav-links.active{display:flex;}
+  .menu-toggle{display:block;}
+}
+
+/* Upload Form */
+form{
+  max-width:500px;margin:120px auto;background:rgba(25,25,25,0.9);
+  border:1px solid rgba(255,255,255,0.05);border-radius:16px;
+  padding:1.8rem;text-align:center;
+  box-shadow:0 0 30px rgba(0,255,255,0.15);
+}
+form h2{
+  margin-bottom:1rem;
+  background:linear-gradient(90deg,#00ffaa,#00e0ff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+input,textarea,select{
+  width:100%;padding:0.7rem 1rem;margin:0.6rem 0;
+  border:none;border-radius:10px;background:#111;color:#fff;
+  border:1px solid rgba(255,255,255,0.1);outline:none;
+}
+input[type=file]{padding:0.4rem;}
+button{
+  background:linear-gradient(90deg,#00ffaa,#00e0ff);
+  color:#000;border:none;padding:0.8rem 1.6rem;
+  font-weight:700;border-radius:10px;cursor:pointer;margin-top:1rem;
+  transition:.25s;
+}
+button:hover{transform:translateY(-2px);box-shadow:0 0 15px rgba(0,255,255,.4);}
+
+/* Preview */
+.preview{
+  margin-top:1rem;text-align:center;
+}
+.preview img{
+  width:120px;height:160px;object-fit:cover;
+  border-radius:10px;border:1px solid rgba(255,255,255,0.1);
+  box-shadow:0 0 20px rgba(0,255,255,0.1);
+  display:block;margin:0 auto;
+}
+
+/* Progress Bar */
+.progress-container{
+  width:100%;background:#111;border-radius:8px;
+  margin-top:1.5rem;height:10px;overflow:hidden;
+  border:1px solid rgba(255,255,255,0.08);
+}
+.progress-bar{
+  height:100%;width:0%;background:linear-gradient(90deg,#00ffaa,#00e0ff);
+  transition:width 0.3s ease;
+}
+
+/* Message */
+#msg{text-align:center;margin-top:1rem;font-weight:500;}
+footer{text-align:center;margin-top:60px;color:#777;font-size:0.9rem;}
+footer a{color:#00e0ff;text-decoration:none;}
+footer a:hover{color:#00ffaa;}
+</style>
+</head>
+<body>
+<header>
+  <h1><i class="fa-solid fa-upload"></i> Upload Book</h1>
+
+  <!-- 🔹 Navigation Menu -->
+  <nav class="nav-links" id="navLinks">
+    <a href="/dashboard"><i class="fa-solid fa-house"></i> Dashboard</a>
+    <a href="/upload" style="color:#00ffaa;"><i class="fa-solid fa-upload"></i> Upload</a>
+    <a href="/manage"><i class="fa-solid fa-gear"></i> Manage</a>
+    <a href="/admin" style="color:#ff6b6b;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+  </nav>
+
+  <div class="menu-toggle" id="menuBtn"><i class="fa-solid fa-bars"></i></div>
+</header>
+
+<form id="uploadForm">
+  <h2>📘 Upload New Book</h2>
+
+  <input type="text" name="title" placeholder="Book Title" required>
+  <input type="text" name="author" placeholder="Author" required>
+  <select name="category" required>
+    <option value="" disabled selected>Select Category</option>
+    <option value="Class 10">Class 10</option>
+    <option value="Class 11">Class 11</option>
+    <option value="Class 12">Class 12</option>
+    <option value="IIT">IIT</option>
+    <option value="NEET">NEET</option>
+  </select>
+  <textarea name="description" rows="3" placeholder="Description..."></textarea>
+
+  <label>📂 Choose Book File</label>
+  <input type="file" name="book_file" accept=".pdf,.epub,.doc,.docx" required>
+
+  <label>🖼️ Choose Thumbnail</label>
+  <input type="file" name="thumbnail" accept="image/*" id="thumbInput" required>
+
+  <div class="preview"><img id="thumbPreview" src="" alt=""></div>
+
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <button type="submit">Upload Book</button>
+  <div id="msg"></div>
+</form>
+
+<footer>© 2025 OceanBooks | <a href="/main">Main Page</a></footer>
+
+<script>
+const thumbInput=document.getElementById('thumbInput');
+const thumbPreview=document.getElementById('thumbPreview');
+const progressBar=document.getElementById('progressBar');
+const msg=document.getElementById('msg');
+
+// 📱 Toggle Menu
+const menuBtn=document.getElementById('menuBtn');
+const navLinks=document.getElementById('navLinks');
+menuBtn.addEventListener('click',()=>navLinks.classList.toggle('active'));
+
+// 🖼️ Thumbnail Preview
+thumbInput.addEventListener('change',()=>{
+  const file=thumbInput.files[0];
+  if(file){
+    const reader=new FileReader();
+    reader.onload=e=>thumbPreview.src=e.target.result;
+    reader.readAsDataURL(file);
+  }
+});
+
+// 🚀 Upload Function
+document.getElementById('uploadForm').addEventListener('submit',async(e)=>{
+  e.preventDefault();
+  const form=e.target;
+  const data=new FormData(form);
+
+  msg.textContent='Uploading...';
+  msg.style.color='#00e0ff';
+  progressBar.style.width='0%';
+
+  try{
+    const res=await fetch('https://oceanbooks.onrender.com/api/books',{
+      method:'POST',
+      body:data
+    });
+
+    if(res.ok){
+      let progress=0;
+      const anim=setInterval(()=>{
+        progress+=10;
+        if(progress>100){progress=100;clearInterval(anim);}
+        progressBar.style.width=progress+'%';
+      },100);
+
+      const result=await res.json();
+      msg.textContent='✅ '+result.message;
+      msg.style.color='#00ffaa';
+      form.reset();
+      thumbPreview.src='';
+      setTimeout(()=>msg.textContent='',2500);
+    }else{
+      const err=await res.json();
+      msg.textContent='❌ '+(err.error||'Upload failed');
+      msg.style.color='#ff5555';
+    }
+  }catch(err){
+    msg.textContent='❌ Network error!';
+    msg.style.color='#ff5555';
+  }
+});
+</script>
+</body>
+</html>

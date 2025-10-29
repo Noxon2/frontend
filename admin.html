@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OceanBooks Admin Login</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{
+  min-height:100vh;
+  background:radial-gradient(circle at top,#020202,#000);
+  display:flex;justify-content:center;align-items:center;
+  color:#fff;overflow:hidden;
+}
+
+/* Back Button */
+.back-btn{
+  position:absolute;top:20px;left:20px;
+  display:flex;align-items:center;gap:8px;
+  padding:8px 14px;
+  background:rgba(0,255,255,0.1);
+  border:1px solid rgba(0,255,255,0.3);
+  border-radius:10px;
+  color:#00ffaa;
+  cursor:pointer;
+  font-weight:600;
+  text-decoration:none;
+  transition:all .25s;
+  backdrop-filter:blur(10px);
+}
+.back-btn:hover{
+  background:linear-gradient(90deg,#00ffaa,#00e0ff);
+  color:#000;
+  box-shadow:0 0 20px rgba(0,255,255,.4);
+  transform:translateY(-2px);
+}
+
+.login-container{
+  width:92%;max-width:420px;
+  background:rgba(20,20,20,0.88);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:16px;
+  backdrop-filter:blur(14px);
+  box-shadow:0 12px 40px rgba(0,255,255,.08);
+  padding:2.2rem 1.6rem;
+  text-align:center;
+  animation:fadeIn .9s ease;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+h1{
+  font-size:1.9rem;margin-bottom:.9rem;
+  background:linear-gradient(90deg,#00ffaa,#00e0ff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  text-shadow:0 0 12px rgba(0,255,255,0.22);
+}
+.login-container p{color:#bfcfcf;font-size:.92rem;margin-bottom:1.2rem}
+.input-group{position:relative;margin-bottom:1rem}
+.input-group input{
+  width:100%;padding:0.82rem 1rem;border-radius:10px;border:1px solid rgba(255,255,255,0.06);
+  background:#0f0f0f;color:#fff;outline:none;font-size:0.97rem;
+  transition:box-shadow .18s, border-color .18s;
+}
+.input-group input:focus{box-shadow:0 6px 20px rgba(0,230,200,0.06);border-color:rgba(0,255,170,0.16)}
+.eye-btn{
+  position:absolute;right:8px;top:50%;transform:translateY(-50%);
+  background:transparent;border:0;color:#9fead0;font-size:1rem;padding:6px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;border-radius:8px;
+}
+.eye-btn:active{transform:translateY(-50%) scale(.98)}
+.button{
+  width:100%;padding:0.84rem;border-radius:10px;border:0;
+  background:linear-gradient(90deg,#00ffaa,#00e0ff);color:#000;font-weight:800;cursor:pointer;
+  box-shadow:0 8px 26px rgba(0,224,200,0.08);
+  transition:transform .12s, box-shadow .12s;
+  font-size:1rem;
+}
+.button:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,224,200,0.12)}
+.msg{margin-top:.9rem;font-size:.95rem;opacity:0;transition:opacity .25s}
+.msg.show{opacity:1}
+.msg.error{color:#ff6b6b}
+.msg.success{color:#9fffdc}
+.footer-note{position:fixed;left:0;right:0;bottom:12px;text-align:center;color:#5f7f7a;font-size:.82rem}
+.footer-note a{color:#00e0ff;text-decoration:none}
+</style>
+</head>
+<body>
+
+<!-- 🔙 Back Button -->
+<a href="/main" class="back-btn">
+  <i class="fa-solid fa-arrow-left"></i> Back
+</a>
+
+<div class="login-container" role="main" aria-labelledby="loginTitle">
+  <h1 id="loginTitle">OceanBooks Admin</h1>
+  <p>Login to manage your library dashboard</p>
+
+  <div class="input-group">
+    <input id="username" type="text" placeholder="Username" autocomplete="username" aria-label="Username">
+  </div>
+
+  <div class="input-group" style="margin-bottom:0.9rem">
+    <input id="password" type="password" placeholder="Password" autocomplete="current-password" aria-label="Password">
+    <button class="eye-btn" id="toggleEye" aria-label="Show password" title="Show password">
+      <i class="fa-regular fa-eye" id="eyeIcon"></i>
+    </button>
+  </div>
+
+  <button class="button" id="loginBtn" aria-live="polite">Login</button>
+
+  <div class="msg error" id="errorMsg" role="status" aria-hidden="true">Invalid username or password ⚠️</div>
+  <div class="msg success" id="successMsg" role="status" aria-hidden="true">Login successful — redirecting…</div>
+</div>
+
+<div class="footer-note">© 2025 OceanBooks — <a href="index.html">Home</a></div>
+
+<script>
+const pw = document.getElementById('password');
+const toggleEye = document.getElementById('toggleEye');
+const eyeIcon = document.getElementById('eyeIcon');
+
+toggleEye.addEventListener('click', (e) => {
+  e.preventDefault();
+  const isHidden = pw.type === 'password';
+  pw.type = isHidden ? 'text' : 'password';
+  eyeIcon.classList.toggle('fa-eye');
+  eyeIcon.classList.toggle('fa-eye-slash');
+  toggleEye.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+  toggleEye.title = isHidden ? 'Hide password' : 'Show password';
+});
+
+// API connected login
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  const user = document.getElementById('username').value.trim();
+  const pass = pw.value.trim();
+  const err = document.getElementById('errorMsg');
+  const succ = document.getElementById('successMsg');
+  err.classList.remove('show'); err.setAttribute('aria-hidden','true');
+  succ.classList.remove('show'); succ.setAttribute('aria-hidden','true');
+
+  if (!user || !pass) {
+    err.textContent = 'Please fill both fields ⚠️';
+    err.classList.add('show'); err.setAttribute('aria-hidden','false');
+    return;
+  }
+
+  try {
+    const form = new FormData();
+    form.append('username', user);
+    form.append('password', pass);
+
+    const res = await fetch('https://oceanbooks.onrender.com/api/admin/login', { method: 'POST', body: form });
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      succ.textContent = 'Login successful — redirecting…';
+      succ.classList.add('show'); succ.setAttribute('aria-hidden','false');
+      setTimeout(()=> window.location.href = '/dashboard', 900);
+    } else {
+      err.textContent = data.error || 'Invalid username or password ⚠️';
+      err.classList.add('show'); err.setAttribute('aria-hidden','false');
+    }
+  } catch (e) {
+    err.textContent = 'Server error — try again';
+    err.classList.add('show'); err.setAttribute('aria-hidden','false');
+  }
+});
+</script>
+</body>
+</html>
