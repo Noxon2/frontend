@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>OceanBooks – Library</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{background:radial-gradient(circle at top,#020202,#000);color:#fff;overflow-x:hidden;}
+
+/* Header */
+header{
+ position:fixed;top:0;left:0;width:100%;
+ display:flex;justify-content:space-between;align-items:center;
+ padding:1rem 6%;z-index:1000;
+ background:rgba(18,18,18,0.55);backdrop-filter:blur(10px);
+ border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.logo{
+ font-size:1.8rem;font-weight:700;
+ background:linear-gradient(90deg,#00ffaa,#00e0ff);
+ -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+ text-shadow:0 0 18px rgba(0,255,255,.25);
+}
+nav a{margin-left:1.5rem;color:#bbb;text-decoration:none;font-weight:500;transition:.25s;}
+nav a:hover{color:#00ffaa;text-shadow:0 0 10px #00ffaa;}
+.menu-toggle{display:none;cursor:pointer;font-size:1.5rem;color:#00e0ff;}
+@media(max-width:768px){
+ nav{display:none;flex-direction:column;background:rgba(10,10,10,0.95);position:absolute;top:100%;right:0;width:180px;padding:1rem;border:1px solid rgba(255,255,255,0.1);border-radius:10px;}
+ nav.active{display:flex;}
+ nav a{margin:0.8rem 0;}
+ .menu-toggle{display:block;}
+}
+
+/* Welcome note */
+.welcome{
+ text-align:center;
+ margin-top:80px;
+ font-size:1.2rem;
+ color:#00ffaa;
+ text-shadow:0 0 15px rgba(0,255,255,0.4);
+ animation:fadeIn 1.5s ease-in-out;
+}
+.welcome span{
+ background:linear-gradient(90deg,#00ffaa,#00e0ff);
+ -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+ font-weight:700;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
+
+/* Page */
+main{padding-top:40px;padding-bottom:60px;padding-left:6%;padding-right:6%;}
+
+/* Custom Dropdown + Search bar */
+.search-filter{
+ display:flex;justify-content:center;align-items:center;flex-wrap:wrap;
+ gap:1rem;margin-bottom:2rem;position:relative;
+}
+.dropdown{position:relative;min-width:180px;}
+.dropdown-toggle{
+ background:#111;color:#00ffaa;border:1px solid rgba(255,255,255,0.15);
+ border-radius:8px;padding:0.7rem 1rem;
+ cursor:pointer;font-weight:600;
+ display:flex;align-items:center;justify-content:space-between;
+ transition:.25s;
+}
+.dropdown-toggle:hover{box-shadow:0 0 12px rgba(0,255,255,.3);}
+.dropdown-menu{
+ position:absolute;top:110%;left:0;width:100%;
+ background:rgba(15,15,15,0.95);border:1px solid rgba(255,255,255,0.1);
+ border-radius:10px;overflow:hidden;
+ box-shadow:0 0 15px rgba(0,255,255,0.1);
+ transform-origin:top;
+ transform:scaleY(0);opacity:0;
+ transition:all .25s ease;
+ z-index:50;
+}
+.dropdown.active .dropdown-menu{transform:scaleY(1);opacity:1;}
+.dropdown-menu div{
+ padding:0.8rem 1rem;cursor:pointer;color:#bbb;transition:.2s;
+}
+.dropdown-menu div:hover{background:linear-gradient(90deg,#00ffaa20,#00e0ff20);color:#00ffaa;}
+.search-filter input{
+ background:#111;color:#fff;border:1px solid rgba(255,255,255,0.1);
+ border-radius:8px;padding:0.7rem 1rem;width:250px;max-width:90%;
+}
+.search-filter button{
+ background:linear-gradient(90deg,#00ffaa,#00e0ff);
+ color:#000;font-weight:600;padding:0.7rem 1.4rem;
+ border:none;border-radius:8px;cursor:pointer;transition:.25s;
+}
+.search-filter button:hover{transform:translateY(-2px);box-shadow:0 0 15px rgba(0,255,255,.4);}
+
+/* Book grid */
+.book-grid{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+ gap:1.5rem;
+}
+.book-card{
+ background:rgba(25,25,25,.9);
+ border:1px solid rgba(255,255,255,.05);
+ border-radius:14px;
+ padding:1rem;
+ display:flex;flex-direction:column;align-items:center;text-align:center;
+ transition:.3s;
+}
+.book-card:hover{transform:translateY(-5px);box-shadow:0 0 25px rgba(0,255,255,.2);}
+.book-card img{width:100%;height:300px;object-fit:cover;border-radius:10px;margin-bottom:1rem;}
+.book-card h3{font-size:1.1rem;margin-bottom:0.3rem;}
+.book-card p{color:#aaa;font-size:0.9rem;margin-bottom:1rem;}
+.book-card a{
+ display:inline-block;
+ background:linear-gradient(90deg,#00ffaa,#00e0ff);
+ color:#000;padding:0.6rem 1.2rem;border-radius:8px;text-decoration:none;font-weight:600;
+ transition:.25s;
+}
+.book-card a:hover{transform:translateY(-2px);box-shadow:0 0 15px rgba(0,255,255,.4);}
+
+/* Footer */
+footer{
+ background:rgba(15,15,15,.85);backdrop-filter:blur(10px);
+ text-align:center;padding:2.5rem 1rem;border-top:1px solid rgba(255,255,255,.05);
+ margin-top:60px;
+}
+footer a{color:#00e0ff;text-decoration:none;margin:0 1rem;}
+footer a:hover{color:#00ffaa;}
+.socials i{margin:0 8px;font-size:1.3rem;color:#00e0ff;transition:.25s;}
+.socials i:hover{color:#00ffaa;transform:translateY(-3px);}
+.copy{color:#666;margin-top:1rem;font-size:.9rem;}
+</style>
+</head>
+
+<body>
+<header>
+  <a href="index.html" class="logo">OceanBooks</a>
+  <nav id="nav">
+    <a href="index.html">Home</a>
+    <a href="#books">Books</a>
+    <a href="admin.html">Admin</a>
+    <a href="#footer">Contact</a>
+  </nav>
+  <div class="menu-toggle" id="menu"><i class="fas fa-bars"></i></div>
+</header>
+
+<div class="welcome">
+  <span>HELLO USER 👋</span> — Welcome to <b>OceanBooks</b>!
+</div>
+
+<main>
+  <div class="search-filter">
+    <div class="dropdown" id="categoryDropdown">
+      <div class="dropdown-toggle">All Categories <i class="fas fa-chevron-down"></i></div>
+      <div class="dropdown-menu">
+        <div data-value="all">All Categories</div>
+        <div data-value="Class 10">Class 10</div>
+        <div data-value="Class 11">Class 11</div>
+        <div data-value="Class 12">Class 12</div>
+        <div data-value="IIT">IIT</div>
+        <div data-value="NEET">NEET</div>
+      </div>
+    </div>
+    <input type="text" id="search" placeholder="Search books...">
+    <button id="searchBtn"><i class="fas fa-search"></i> Search</button>
+  </div>
+
+  <div class="book-grid" id="books"></div>
+</main>
+
+<footer id="footer">
+  <div class="socials">
+    <a href="mailto:support@oceanbooks.com"><i class="fas fa-envelope"></i></a>
+    <a href="https://t.me/N_noxon" target="_blank"><i class="fab fa-telegram"></i></a>
+  </div>
+  <div>
+    <a href="index.html">Home</a> |
+    <a href="#books">Books</a> |
+    <a href="/admin">Admin</a>
+  </div>
+  <p class="copy">© 2025 OceanBooks. All rights reserved.</p>
+</footer>
+
+<script>
+const menu=document.getElementById('menu');
+const nav=document.getElementById('nav');
+menu.addEventListener('click',()=>nav.classList.toggle('active'));
+
+let allBooks=[];let activeFilter='all';
+
+/* ---- Dropdown ---- */
+const dropdown=document.getElementById('categoryDropdown');
+const toggle=dropdown.querySelector('.dropdown-toggle');
+const menuBox=dropdown.querySelector('.dropdown-menu');
+const options=menuBox.querySelectorAll('div');
+
+toggle.addEventListener('click',()=>dropdown.classList.toggle('active'));
+options.forEach(opt=>{
+  opt.addEventListener('click',()=>{
+    activeFilter=opt.getAttribute('data-value');
+    toggle.innerHTML=`${opt.textContent} <i class="fas fa-chevron-down"></i>`;
+    dropdown.classList.remove('active');
+    const q=document.getElementById('search').value.trim();
+    filterAndDisplay(q);
+  });
+});
+document.addEventListener('click',e=>{if(!dropdown.contains(e.target))dropdown.classList.remove('active');});
+
+/* ---- Fetch Books (Render API URL) ---- */
+async function loadBooks(query=''){
+  try{
+    const res=await fetch('https://oceanbooks.onrender.com/api/books');
+    const books=await res.json();
+    allBooks=books;
+    filterAndDisplay(query);
+  }catch(e){
+    document.getElementById('books').innerHTML='<p style="text-align:center;color:#f66;">Error loading books.</p>';
+  }
+}
+
+/* ---- Filter + Search ---- */
+function filterAndDisplay(query=''){
+  let filtered=allBooks;
+  if(query) filtered=filtered.filter(b=>b.title.toLowerCase().includes(query.toLowerCase()));
+  if(activeFilter!=='all') filtered=filtered.filter(b=>(b.category && b.category.toLowerCase().includes(activeFilter.toLowerCase())));
+  displayBooks(filtered);
+}
+
+/* ---- Display Books ---- */
+function displayBooks(list){
+  const grid=document.getElementById('books');
+  grid.innerHTML='';
+  if(list.length===0){grid.innerHTML='<p style="text-align:center;color:#888;">No books found.</p>';return;}
+  list.forEach(b=>{
+    const card=document.createElement('div');
+    card.className='book-card';
+    card.innerHTML=`
+      <img src="${b.thumbnail_path || 'https://cdn-icons-png.flaticon.com/512/29/29302.png'}" alt="${b.title}">
+      <h3>${b.title}</h3>
+      <p>${b.author || ''}</p>
+      <a href="book-details.html?id=${b.id}"><i class="fas fa-book-open"></i> View Details</a>`;
+    grid.appendChild(card);
+  });
+}
+
+/* ---- Search ---- */
+document.getElementById('searchBtn').addEventListener('click',()=>{
+  const q=document.getElementById('search').value.trim();filterAndDisplay(q);
+});
+document.getElementById('search').addEventListener('keyup',e=>{
+  if(e.key==='Enter')document.getElementById('searchBtn').click();
+});
+
+loadBooks();
+</script>
+</body>
+</html>
