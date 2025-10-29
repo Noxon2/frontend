@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OceanBooks Dashboard</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{
+  min-height:100vh;
+  background:radial-gradient(circle at top,#020202,#000);
+  color:#fff;
+  display:flex;flex-direction:column;
+  align-items:center;
+  padding:100px 20px 60px;
+  overflow-x:hidden;
+}
+
+/* Header */
+header{
+  position:fixed;top:0;left:0;width:100%;
+  background:rgba(20,20,20,0.8);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  padding:1rem 6%;
+  display:flex;justify-content:space-between;align-items:center;
+  z-index:1000;
+}
+header h1{
+  font-size:1.6rem;
+  background:linear-gradient(90deg,#00ffaa,#00e0ff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  text-shadow:0 0 15px rgba(0,255,255,0.25);
+}
+
+/* Nav menu */
+.nav-links{
+  display:flex;align-items:center;gap:1.2rem;
+}
+.nav-links a{
+  color:#bbb;
+  text-decoration:none;
+  font-weight:500;
+  transition:.25s;
+}
+.nav-links a:hover{
+  color:#00ffaa;
+  text-shadow:0 0 10px #00ffaa;
+}
+.menu-toggle{
+  display:none;font-size:1.4rem;color:#00e0ff;cursor:pointer;
+}
+@media(max-width:768px){
+  .nav-links{
+    position:absolute;
+    top:100%;right:0;
+    flex-direction:column;
+    background:rgba(10,10,10,0.95);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:10px;
+    padding:1rem 1.5rem;
+    display:none;
+  }
+  .nav-links.active{display:flex;}
+  .menu-toggle{display:block;}
+}
+
+/* Dashboard content */
+.dashboard{
+  width:100%;max-width:1000px;
+  margin-top:80px;
+  display:flex;flex-direction:column;align-items:center;gap:40px;
+}
+
+/* Stat cards */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;width:100%;
+}
+.stat-card{
+  background:rgba(25,25,25,0.85);
+  border:1px solid rgba(255,255,255,0.05);
+  border-radius:16px;
+  padding:1.5rem;
+  text-align:center;
+  box-shadow:0 0 25px rgba(0,255,255,0.1);
+  transition:.3s;
+}
+.stat-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 0 30px rgba(0,255,255,0.25);
+}
+.stat-card i{
+  font-size:2rem;color:#00ffaa;margin-bottom:0.5rem;
+}
+.stat-card h3{
+  font-size:1.2rem;margin-bottom:0.4rem;
+}
+.stat-card p{
+  font-size:1.6rem;font-weight:700;
+  background:linear-gradient(90deg,#00ffaa,#00e0ff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+
+/* Footer */
+footer{
+  margin-top:60px;
+  text-align:center;
+  color:#777;
+  font-size:0.9rem;
+}
+footer a{color:#00e0ff;text-decoration:none;}
+footer a:hover{color:#00ffaa;}
+</style>
+</head>
+<body>
+<header>
+  <h1><i class="fa-solid fa-chart-line"></i> Admin Dashboard</h1>
+
+  <!-- 🔹 Navigation Menu -->
+  <nav class="nav-links" id="navLinks">
+    <a href="/dashboard"><i class="fa-solid fa-house"></i> Dashboard</a>
+    <a href="/upload"><i class="fa-solid fa-upload"></i> Upload</a>
+    <a href="/manage"><i class="fa-solid fa-gear"></i> Manage</a>
+    <a href="/admin" style="color:#ff6b6b;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+  </nav>
+
+  <div class="menu-toggle" id="menuBtn"><i class="fa-solid fa-bars"></i></div>
+</header>
+
+<main class="dashboard">
+  <section class="stats">
+    <div class="stat-card">
+      <i class="fa-solid fa-book"></i>
+      <h3>Total Books</h3>
+      <p id="totalBooks">0</p>
+    </div>
+    <div class="stat-card">
+      <i class="fa-solid fa-download"></i>
+      <h3>Total Downloads</h3>
+      <p id="totalDownloads">0</p>
+    </div>
+    <div class="stat-card">
+      <i class="fa-solid fa-database"></i>
+      <h3>Storage Used</h3>
+      <p id="totalSize">0 MB</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  © 2025 OceanBooks Admin Panel | <a href="/main">Main Page</a>
+</footer>
+
+<script>
+// 📊 Load Stats
+async function loadStats(){
+  try{
+    const res = await fetch('https://oceanbooks.onrender.com/api/admin/stats');
+    const data = await res.json();
+    document.getElementById('totalBooks').textContent = data.total_books || 0;
+    document.getElementById('totalDownloads').textContent = data.total_downloads || 0;
+    document.getElementById('totalSize').textContent = data.total_size || '0 MB';
+  }catch(e){
+    console.error('Error loading stats', e);
+  }
+}
+loadStats();
+
+// 📱 Mobile menu toggle
+const menuBtn = document.getElementById('menuBtn');
+const navLinks = document.getElementById('navLinks');
+menuBtn.addEventListener('click', ()=>navLinks.classList.toggle('active'));
+</script>
+</body>
+</html>
